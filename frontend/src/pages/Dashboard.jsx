@@ -27,7 +27,7 @@ const Dashboard = () => {
 
     const fetchTasks = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/tasks", {
+        const res = await fetch("https://secure-task-manager-backend-ooxa.onrender.com/api/tasks", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -47,7 +47,7 @@ const Dashboard = () => {
     if (!task.trim()) return;
 
     try {
-      const res = await fetch("http://localhost:5000/api/tasks", {
+      const res = await fetch("https://secure-task-manager-backend-ooxa.onrender.com/api/tasks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -68,7 +68,7 @@ const Dashboard = () => {
   const toggleTask = async (id) => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/tasks/${id}`,
+      `https://secure-task-manager-backend-ooxa.onrender.com/api/tasks/${id}`,
         {
           method: "PUT",
           headers: {
@@ -89,12 +89,15 @@ const Dashboard = () => {
 
   const deleteTask = async (id) => {
     try {
-      await fetch(`http://localhost:5000/api/tasks/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    await fetch(
+  `https://secure-task-manager-backend-ooxa.onrender.com/api/tasks/${id}`,
+  {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
 
       setTasks((prev) => prev.filter((t) => t._id !== id));
     } catch (err) {
@@ -107,7 +110,7 @@ const Dashboard = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/tasks/edit/${id}`,
+      `https://secure-task-manager-backend-ooxa.onrender.com/api/tasks/edit/${id}`,
         {
           method: "PUT",
           headers: {
