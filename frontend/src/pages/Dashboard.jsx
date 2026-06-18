@@ -143,25 +143,28 @@ const Dashboard = () => {
 
   return (
     <div style={styles.page}>
-      <div style={styles.header}>
-        <div>
-          <h2>Task Dashboard</h2>
-          <p style={styles.sub}>
-            Welcome back, {name} 👋
-          </p>
-        </div>
+     <div style={styles.header}>
+  <div style={styles.headerTop}>
+    <div>
+      <h2 style={{ margin: 0 }}>Task Dashboard</h2>
 
-        <div style={styles.userBox}>
-          <strong>{email}</strong>
-        </div>
+      <p style={styles.sub}>
+        Welcome back, {name} 👋
+      </p>
 
-        <button
-          onClick={logout}
-          style={styles.logout}
-        >
-          Logout
-        </button>
+      <div style={styles.userBox}>
+        <strong>{email}</strong>
       </div>
+    </div>
+
+    <button
+      onClick={logout}
+      style={styles.logout}
+    >
+      Logout
+    </button>
+  </div>
+</div>
 
       <div style={styles.stats}>
         <div style={styles.statCard}>
@@ -317,11 +320,19 @@ const styles = {
       "linear-gradient(-45deg,#0f172a,#1e293b,#6366f1,#9333ea)",
     padding: "20px",
   },
+headerTop: {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "flex-start",
+  flexWrap: "wrap",
+  gap: "10px",
+},
 
   header: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+     flexWrap: "wrap", 
     padding: "20px",
     borderRadius: "15px",
     background:
