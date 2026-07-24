@@ -68,11 +68,11 @@ app.use("/api/tasks", taskRoutes);
    (IMPORTANT FOR CLEAN DEBUGGING)
 ========================= */
 app.use((err, req, res, next) => {
-  console.error("🔥 SERVER ERROR:", err.message);
+  console.error("🔥 SERVER ERROR FULL:", err);
 
   res.status(500).json({
     success: false,
-    message: "Internal Server Error",
+    message: err.message,
   });
 });
 

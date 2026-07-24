@@ -1,18 +1,22 @@
 console.log("🔥🔥🔥 AUTH ROUTES LOADED - NEW VERSION 🔥🔥🔥");
 const express = require("express");
 const router = express.Router();
-console.log("RESEND KEY:", process.env.RESEND_API_KEY);
+console.log(
+  "RESEND KEY STATUS:",
+  process.env.RESEND_API_KEY ? "AVAILABLE" : "MISSING"
+);
 const { Resend } = require("resend");
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const User = require("../models/User");
+const OTP = require("../models/OTP");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 console.log("🔥 AUTH ROUTES LOADED");
 
 // OTP memory store
-const otpStore = {};
+
 router.get("/test", (req, res) => {
   res.json({
     message: "AUTH ROUTES NEW VERSION"
@@ -92,13 +96,25 @@ router.post("/login", async (req, res) => {
 router.post("/send-otp", async (req, res) => {
   try {
     const { email } = req.body;
+const user = await User.findOne({email});
 
-    const otp = Math.floor(100000 + Math.random() * 900000);
 
-    otpStore[email] = {
-      otp,
-      expires: Date.now() + 5 * 60 * 1000,
-    };
+if(!user){
+
+return res.status(404).json({
+message:"User not found"
+});
+
+}
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+ await OTP.deleteMany({ email });
+
+await OTP.create({
+  email,
+  otp,
+  expiresAt: new Date(Date.now() + 5 * 60 * 1000)
+});
 
     console.log("Generated OTP:", otp);
 
@@ -129,28 +145,33 @@ router.post("/send-otp", async (req, res) => {
 });
 
 /* ================= VERIFY OTP ================= */
-router.post("/verify-otp", (req, res) => {
+router.post("/verify-otp", async (req, res) => {
   try {
     const { email, otp } = req.body;
 
-    const record = otpStore[email];
+    const record = await OTP.findOne({ email });
 
     if (!record) {
       return res.status(400).json({ message: "OTP not found" });
     }
 
-    if (Date.now() > record.expires) {
+    if (Date.now() > record.expiresAt) {
       return res.status(400).json({ message: "OTP expired" });
     }
 
-    if (parseInt(otp) !== record.otp) {
-      return res.status(400).json({ message: "Wrong OTP" });
-    }
+if (otp !== record.otp) {
+  return res.status(400).json({ message: "Wrong OTP" });
+}
 
-    res.json({
-      success: true,
-      message: "OTP verified successfully",
-    });
+
+record.verified = true;
+await record.save();
+
+
+res.json({
+  success: true,
+  message: "OTP verified successfully",
+});
 
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -161,7 +182,26 @@ router.post("/verify-otp", (req, res) => {
 router.post("/reset-password", async (req, res) => {
   try {
     const { email, newPassword } = req.body;
+    if(newPassword.length < 8){
 
+return res.status(400).json({
+message:"Password must be at least 8 characters"
+});
+
+}
+const otpRecord = await OTP.findOne({
+  email,
+  verified:true
+});
+
+
+if(!otpRecord){
+
+ return res.status(400).json({
+   message:"Please verify OTP first"
+ });
+
+}
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -172,7 +212,7 @@ router.post("/reset-password", async (req, res) => {
     user.password = hashedPassword;
     await user.save();
 
-    delete otpStore[email];
+    await OTP.deleteMany({ email });
 
     await resend.emails.send({
       from: "Secure Task App <onboarding@resend.dev>",

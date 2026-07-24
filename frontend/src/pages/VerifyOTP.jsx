@@ -8,23 +8,55 @@ const VerifyOTP = () => {
   const email = localStorage.getItem("resetEmail");
 
   const verifyOTP = async () => {
-    const res = await fetch("http://localhost:5000/api/auth/verify-otp", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, otp }),
-    });
 
-    const data = await res.json();
-
-    if (res.ok) {
-      alert("OTP Verified");
-      navigate("/reset-password");
-    } else {
-      alert(data.message);
+    if (!otp) {
+      alert("Please enter OTP");
+      return;
     }
+
+    try {
+
+      const res = await fetch(
+        "https://secure-task-manager-backend-ooxa.onrender.com/api/auth/verify-otp",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            otp,
+          }),
+        }
+      );
+
+
+      const data = await res.json();
+
+
+      if (res.ok) {
+
+        alert("OTP Verified");
+
+        navigate("/reset-password");
+
+      } else {
+
+        alert(data.message);
+
+      }
+
+
+    } catch (error) {
+
+      console.log("VERIFY OTP ERROR:", error);
+
+      alert("Server error");
+
+    }
+
   };
+
 
   return (
     <div style={styles.container}>
@@ -39,18 +71,24 @@ const VerifyOTP = () => {
           <input
             placeholder="Enter 6 Digit OTP"
             value={otp}
+            maxLength="6"
             onChange={(e) => setOtp(e.target.value)}
             style={styles.input}
           />
 
-          <button onClick={verifyOTP} style={styles.button}>
+          <button 
+            onClick={verifyOTP} 
+            style={styles.button}
+          >
             Verify OTP
           </button>
+
         </div>
       </div>
     </div>
   );
 };
+
 
 const styles = {
   container: {
