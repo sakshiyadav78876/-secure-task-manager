@@ -1,17 +1,28 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { 
+  Lock, 
+  ShieldAlert, 
+  ArrowRight, 
+  
+  Eye, 
+  EyeOff, 
+  Key, 
+  ShieldCheck 
+} from "lucide-react";
 
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPass, setShowPass] = useState(false);
+  const [showConfirmPass, setShowConfirmPass] = useState(false);
 
   const navigate = useNavigate();
-
   const email = localStorage.getItem("resetEmail");
 
+  // --- KEEPING YOUR ORIGINAL BACKEND LOGIC ---
   const resetPassword = async () => {
-
     if (!newPassword || !confirmPassword) {
       alert("Please fill all fields");
       return;
@@ -29,9 +40,7 @@ const ResetPassword = () => {
     }
 
     try {
-
       setLoading(true);
-
       const res = await fetch(
         "https://secure-task-manager-backend-ooxa.onrender.com/api/auth/reset-password",
         {
@@ -46,160 +55,346 @@ const ResetPassword = () => {
         }
       );
 
-
       const data = await res.json();
 
-      console.log("Reset Response:", data);
-
-
       if (res.ok) {
-
         alert("Password changed successfully ✅");
-
         localStorage.removeItem("resetEmail");
-
         navigate("/login");
-
       } else {
-
         alert(data.message || "Password reset failed");
-
       }
-
-
     } catch (error) {
-
       console.log("Reset Error:", error);
-
       alert("Server error. Try again later.");
-
     } finally {
-
       setLoading(false);
-
     }
-
   };
-
 
   return (
     <div style={styles.container}>
+      {/* LEFT SIDE: BRANDING & SECURITY VISUALS */}
+      <div style={styles.leftSection}>
+        <div style={styles.blob1}></div>
+        <div style={styles.blob2}></div>
+        
+        <div style={styles.brandContent}>
+          <div style={styles.logoWrapper}>
+            <ShieldAlert size={54} color="#f43f5e" style={styles.mainIcon} />
+            <div style={styles.iconGlow}></div>
+          </div>
 
-      <div style={styles.card}>
+          <h1 style={styles.brandTitle}>Secure Your Account</h1>
+          <p style={styles.brandText}>
+            You're one step away from reclaiming your workspace. Create a strong, unique password to ensure your tasks remain strictly private.
+          </p>
 
-        <h2 style={styles.title}>
-          Reset Password 🔑
-        </h2>
-
-
-        <p style={styles.subtitle}>
-          Create a new secure password
-        </p>
-
-
-        <div style={styles.form}>
-
-
-          <input
-            type="password"
-            placeholder="New Password"
-            value={newPassword}
-            onChange={(e)=>setNewPassword(e.target.value)}
-            style={styles.input}
-          />
-
-
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e)=>setConfirmPassword(e.target.value)}
-            style={styles.input}
-          />
-
-
-          <button
-            onClick={resetPassword}
-            style={styles.button}
-            disabled={loading}
-          >
-
-            {loading ? "Resetting..." : "Reset Password"}
-
-          </button>
-
-
+          <div style={styles.featureList}>
+            <div style={styles.featureItem}>
+              <div style={styles.iconBox}><Key size={20} /></div>
+              <div>
+                <div style={styles.featureTitle}>Bcrypt Hashing</div>
+                <div style={styles.featureDesc}>Industry-standard encryption for your credentials.</div>
+              </div>
+            </div>
+            <div style={styles.featureItem}>
+              <div style={styles.iconBox}><ShieldCheck size={20} /></div>
+              <div>
+                <div style={styles.featureTitle}>Session Invalidation</div>
+                <div style={styles.featureDesc}>Resets clear all active sessions for total security.</div>
+              </div>
+            </div>
+          </div>
         </div>
-
-
       </div>
 
+      {/* RIGHT SIDE: RESET PASSWORD CARD */}
+      <div style={styles.rightSection}>
+        <div style={styles.card}>
+          <div style={styles.headerArea}>
+            <h2 style={styles.title}>New Password 🔑</h2>
+            <p style={styles.subtitle}>Setting new password for <strong>{email}</strong></p>
+          </div>
 
+          <div style={styles.form}>
+            {/* New Password Input */}
+            <div style={styles.inputGroup}>
+              <label style={styles.label}>Create New Password</label>
+              <div style={styles.inputWrapper}>
+                <Lock size={18} color="#64748b" style={styles.fieldIcon} />
+                <input
+                  type={showPass ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  style={styles.input}
+                />
+                <button 
+                  type="button" 
+                  onClick={() => setShowPass(!showPass)}
+                  style={styles.eyeBtn}
+                >
+                  {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+
+            {/* Confirm Password Input */}
+            <div style={styles.inputGroup}>
+              <label style={styles.label}>Confirm New Password</label>
+              <div style={styles.inputWrapper}>
+                <Lock size={18} color="#64748b" style={styles.fieldIcon} />
+                <input
+                  type={showConfirmPass ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  style={styles.input}
+                />
+                <button 
+                  type="button" 
+                  onClick={() => setShowConfirmPass(!showConfirmPass)}
+                  style={styles.eyeBtn}
+                >
+                  {showConfirmPass ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+
+            <button
+              onClick={resetPassword}
+              style={styles.button}
+              disabled={loading}
+            >
+              <span>{loading ? "Updating Security..." : "Reset Password"}</span>
+              {!loading && <ArrowRight size={18} />}
+            </button>
+          </div>
+
+          <div style={styles.cardFooter}>
+            <p style={styles.footerText}>
+              Changed your mind? <span style={styles.linkText} onClick={() => navigate("/login")}>Return to Login</span>
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
 
-
-
+// --- PREMIUM SaaS STYLES ---
 const styles = {
-
-  container:{
-    height:"100vh",
-    display:"flex",
-    justifyContent:"center",
-    alignItems:"center",
-    background:"linear-gradient(135deg,#667eea,#764ba2)",
-    fontFamily:"Arial",
+  container: {
+    height: "100vh",
+    width: "100vw",
+    display: "flex",
+    background: "#030712",
+    fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+    overflow: "hidden",
   },
-
-
-  card:{
-    background:"white",
-    padding:"30px",
-    borderRadius:"15px",
-    width:"320px",
-    boxShadow:"0 10px 30px rgba(0,0,0,0.2)",
-    textAlign:"center",
+  leftSection: {
+    flex: 1.3,
+    position: "relative",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    background: "linear-gradient(145deg, #0f172a 0%, #020617 100%)",
+    padding: "60px",
+    borderRight: "1px solid rgba(255,255,255,0.05)",
   },
-
-
-  title:{
-    marginBottom:"5px",
+  blob1: {
+    position: "absolute",
+    top: "10%", left: "10%",
+    width: "300px", height: "300px",
+    background: "rgba(244, 63, 94, 0.15)", // Rose-colored for security
+    filter: "blur(80px)",
+    borderRadius: "50%",
   },
-
-
-  subtitle:{
-    fontSize:"12px",
-    color:"gray",
-    marginBottom:"20px",
+  blob2: {
+    position: "absolute",
+    bottom: "15%", right: "10%",
+    width: "250px", height: "250px",
+    background: "rgba(124, 58, 237, 0.1)",
+    filter: "blur(80px)",
+    borderRadius: "50%",
   },
-
-
-  form:{
-    display:"flex",
-    flexDirection:"column",
-    gap:"12px",
+  brandContent: {
+    position: "relative",
+    zIndex: 10,
+    maxWidth: "500px",
   },
-
-
-  input:{
-    padding:"12px",
-    borderRadius:"8px",
-    border:"1px solid #ddd",
-    outline:"none",
+  logoWrapper: {
+    position: "relative",
+    marginBottom: "32px",
   },
-
-
-  button:{
-    padding:"12px",
-    background:"#4f46e5",
-    color:"white",
-    border:"none",
-    borderRadius:"8px",
-    cursor:"pointer",
+  mainIcon: {
+    filter: "drop-shadow(0 0 20px rgba(244, 63, 94, 0.4))",
   },
-
+  iconGlow: {
+    position: "absolute",
+    top: 0, left: 0,
+    width: "54px", height: "54px",
+    background: "rgba(244, 63, 94, 0.3)",
+    filter: "blur(25px)",
+  },
+  brandTitle: {
+    fontSize: "48px",
+    fontWeight: "800",
+    color: "#fff",
+    letterSpacing: "-1.5px",
+    lineHeight: "1.1",
+    marginBottom: "20px",
+  },
+  brandText: {
+    fontSize: "18px",
+    color: "#94a3b8",
+    lineHeight: "1.6",
+    marginBottom: "48px",
+  },
+  featureList: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "28px",
+  },
+  featureItem: {
+    display: "flex",
+    alignItems: "flex-start",
+    gap: "18px",
+  },
+  iconBox: {
+    width: "44px",
+    height: "44px",
+    borderRadius: "12px",
+    background: "rgba(255,255,255,0.03)",
+    border: "1px solid rgba(255,255,255,0.1)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "#f43f5e",
+    flexShrink: 0,
+  },
+  featureTitle: {
+    fontSize: "17px",
+    fontWeight: "600",
+    color: "#f8fafc",
+    marginBottom: "4px",
+  },
+  featureDesc: {
+    fontSize: "14px",
+    color: "#64748b",
+  },
+  rightSection: {
+    flex: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    background: "#030712",
+    padding: "40px",
+  },
+  card: {
+    width: "100%",
+    maxWidth: "420px",
+    padding: "40px",
+    borderRadius: "32px",
+    background: "rgba(255, 255, 255, 0.02)",
+    backdropFilter: "blur(16px)",
+    border: "1px solid rgba(255, 255, 255, 0.08)",
+    boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.7)",
+  },
+  headerArea: {
+    marginBottom: "30px",
+  },
+  title: {
+    fontSize: "28px",
+    fontWeight: "700",
+    color: "#fff",
+    marginBottom: "10px",
+  },
+  subtitle: {
+    fontSize: "15px",
+    color: "#94a3b8",
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "20px",
+  },
+  inputGroup: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "8px",
+  },
+  label: {
+    fontSize: "14px",
+    fontWeight: "500",
+    color: "#cbd5e1",
+    marginLeft: "4px",
+  },
+  inputWrapper: {
+    position: "relative",
+    display: "flex",
+    alignItems: "center",
+  },
+  fieldIcon: {
+    position: "absolute",
+    left: "16px",
+    opacity: 0.8,
+  },
+  input: {
+    width: "100%",
+    background: "rgba(0, 0, 0, 0.3)",
+    border: "1px solid rgba(255, 255, 255, 0.1)",
+    padding: "14px 44px 14px 48px",
+    borderRadius: "14px",
+    color: "#fff",
+    fontSize: "15px",
+    outline: "none",
+    transition: "all 0.2s ease",
+  },
+  eyeBtn: {
+    position: "absolute",
+    right: "14px",
+    background: "none",
+    border: "none",
+    color: "#64748b",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+  },
+  button: {
+    marginTop: "10px",
+    padding: "16px",
+    borderRadius: "14px",
+    border: "none",
+    background: "linear-gradient(135deg, #f43f5e 0%, #7c3aed 100%)",
+    color: "#fff",
+    fontSize: "16px",
+    fontWeight: "600",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "10px",
+    boxShadow: "0 10px 25px -5px rgba(244, 63, 94, 0.4)",
+    transition: "opacity 0.2s",
+  },
+  cardFooter: {
+    marginTop: "32px",
+    textAlign: "center",
+  },
+  footerText: {
+    color: "#64748b",
+    fontSize: "14px",
+  },
+  linkText: {
+    color: "#fff",
+    fontWeight: "600",
+    marginLeft: "6px",
+    textDecoration: "underline",
+    textUnderlineOffset: "4px",
+    cursor: "pointer"
+  }
 };
-
 
 export default ResetPassword;
