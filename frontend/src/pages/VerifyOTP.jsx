@@ -6,6 +6,10 @@ const VerifyOTP = () => {
   const navigate = useNavigate();
 
   const email = localStorage.getItem("resetEmail");
+  if (!email) {
+  alert("Email missing. Restart forgot password.");
+  navigate("/forgot-password");
+}
 
   const verifyOTP = async () => {
 

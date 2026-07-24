@@ -5,35 +5,63 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
 
-  const sendOTP = async () => {
-    try {
-  
- const res = await fetch(
-  "https://secure-task-manager-backend-ooxa.onrender.com/api/auth/send-otp",
-  {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email }),
+const sendOTP = async () => {
+
+  if (!email) {
+    alert("Please enter your email");
+    return;
   }
-);
-      
 
-      const data = await res.json();
+  try {
 
-      if (res.ok) {
-        alert("OTP sent to email");
-        localStorage.setItem("resetEmail", email);
-        navigate("/verify-otp");
-      } else {
-        alert(data.message);
+    const res = await fetch(
+      "https://secure-task-manager-backend-ooxa.onrender.com/api/auth/send-otp",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email.trim(),
+        }),
       }
-    } catch (error) {
-      console.log(error);
-      alert("Server error");
+    );
+
+
+    const data = await res.json();
+
+
+    console.log("Send OTP Response:", data);
+
+
+    if (res.ok) {
+
+      alert("OTP sent to email ✅");
+
+      localStorage.setItem(
+        "resetEmail",
+        email.trim()
+      );
+
+      navigate("/verify-otp");
+
+    } else {
+
+      alert(data.message || "Failed to send OTP");
+
     }
-  };
+
+
+  } catch(error) {
+
+    console.log("SEND OTP ERROR:", error);
+
+    alert("Server error");
+
+  }
+
+};
+
 
   return (
     <div style={styles.container}>
