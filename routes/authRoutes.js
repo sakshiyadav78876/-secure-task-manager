@@ -1,12 +1,22 @@
 console.log("🔥🔥🔥 AUTH ROUTES LOADED - NEW VERSION 🔥🔥🔥");
 const express = require("express");
 const router = express.Router();
-console.log(
-  "RESEND KEY STATUS:",
-  process.env.RESEND_API_KEY ? "AVAILABLE" : "MISSING"
-);
-const { Resend } = require("resend");
-const resend = new Resend(process.env.RESEND_API_KEY);
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+transporter.verify((error, success) => {
+  if (error) {
+    console.log("❌ Gmail Connection Error:", error);
+  } else {
+    console.log("✅ Gmail is ready to send emails");
+  }
+});
 
 const User = require("../models/User");
 const OTP = require("../models/OTP");
@@ -118,17 +128,17 @@ await OTP.create({
 
     console.log("Generated OTP:", otp);
 
-    const result = await resend.emails.send({
-      from: "Secure Task App <onboarding@resend.dev>",
-      to: email,
-      subject: "Password Reset OTP",
-      html: `
-        <h2>Your OTP is: ${otp}</h2>
-        <p>This OTP is valid for 5 minutes.</p>
-      `,
-    });
+  await transporter.sendMail({
+  from: `"Secure Task Manager" <${process.env.EMAIL_USER}>`,
+  to: email,
+  subject: "Password Reset OTP",
+  html: `
+    <h2>Your OTP is: ${otp}</h2>
+    <p>This OTP is valid for 5 minutes.</p>
+  `,
+});
 
-    console.log("RESEND RESULT:", result);
+console.log("OTP sent successfully");
 
     res.json({
       success: true,
@@ -214,15 +224,15 @@ if(!otpRecord){
 
     await OTP.deleteMany({ email });
 
-    await resend.emails.send({
-      from: "Secure Task App <onboarding@resend.dev>",
-      to: email,
-      subject: "Password Changed Successfully",
-      html: `
-        <p>Your password was changed successfully at:</p>
-        <h3>${new Date().toLocaleString()}</h3>
-      `,
-    });
+await transporter.sendMail({
+  from: `"Secure Task Manager" <${process.env.EMAIL_USER}>`,
+  to: email,
+  subject: "Password Changed Successfully",
+  html: `
+    <p>Your password was changed successfully at:</p>
+    <h3>${new Date().toLocaleString()}</h3>
+  `,
+});
 
     res.json({
       success: true,
