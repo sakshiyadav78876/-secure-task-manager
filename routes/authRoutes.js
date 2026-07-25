@@ -6,17 +6,19 @@ const dns = require("dns");
 dns.setDefaultResultOrder("ipv4first");
 
 const transporter = nodemailer.createTransport({
-  service: "SendGrid",
+  host: "smtp.sendgrid.net",
+  port: 587,
+  secure: false,
   auth: {
     user: "apikey",
     pass: process.env.SENDGRID_API_KEY,
   },
 });
-transporter.verify((error, success) => {
+transporter.verify((error) => {
   if (error) {
-    console.log("❌ Gmail Connection Error:", error);
+    console.log("❌ SendGrid Connection Error:", error);
   } else {
-    console.log("✅ Gmail is ready to send emails");
+    console.log("✅ SendGrid SMTP Ready");
   }
 });
 

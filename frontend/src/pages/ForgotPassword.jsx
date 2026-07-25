@@ -24,7 +24,7 @@ const ForgotPassword = () => {
     try {
       setLoading(true);
       const res = await fetch(
-        "https://secure-task-manager-backend-ooxa.onrender.com/api/auth/send-otp",
+        "https://secure-task-manager-backend-ooxa.onrender.com/api/auth/send-otp/",
         {
           method: "POST",
           headers: {
