@@ -1,74 +1,334 @@
 # Secure Task Manager
 
-A full-stack task management application that allows users to create and manage their personal tasks securely.
+A production-ready full-stack task management application built with the MERN stack, focused on secure authentication, role-based access control, and reliable task management workflows.
 
-The application includes user authentication, task management features, and email notifications. Each user can register, log in, and manage only their own tasks.
+The application provides users with a secure platform to create, manage, and track tasks while implementing industry-standard authentication practices including JWT security, password hashing, OTP-based password recovery, and protected API routes.
 
-## What This Project Does
+## Live Application
+
+Frontend:
+https://secure-task-manager-iota.vercel.app/
+
+Backend API:
+https://secure-task-manager-backend-ooxa.onrender.com
+
+---
+
+# Project Overview
+
+Secure Task Manager is a full-stack web application designed to demonstrate real-world software development practices.
+
+The project includes:
+
+* Secure user authentication system
+* JWT-based authorization
+* Role-based access control
+* Task management operations
+* Email-based OTP verification
+* Password recovery workflow
+* Admin user management
+* RESTful API architecture
+* Cloud deployment
+
+The application follows a scalable frontend and backend architecture similar to modern production applications.
+
+---
+
+# Key Features
+
+## Authentication and Authorization
+
+* User registration and login
+* Secure password encryption using bcrypt
+* JWT token-based authentication
+* Protected routes using authentication middleware
+* Role-based access control for users and administrators
+* Secure session handling
+
+---
+
+## Password Recovery System
+
+A complete password reset workflow is implemented:
+
+1. User enters registered email address
+2. Backend validates the user account
+3. System generates a secure six-digit OTP
+4. OTP is sent through email service
+5. User verifies OTP
+6. User creates a new password securely
+
+This feature demonstrates integration of external email services with backend authentication workflows.
+
+---
+
+## Task Management
 
 Users can:
 
-- Create an account
-- Log in securely
-- Create tasks
-- Update tasks
-- Delete tasks
-- View their task list
-- Receive emails for account-related actions
+* Create tasks
+* View personal tasks
+* Update task status
+* Mark tasks as completed
+* Delete tasks
+* Manage their productivity workflow
 
-The application ensures that users can only access their own data.
+Each user's tasks are securely isolated using user-based authorization.
 
-## How It Works
+---
 
-1. A user registers using their email and password.
-2. The password is hashed before being stored in the database.
-3. After login, a JWT token is generated.
-4. The token is used to access protected routes.
-5. Users can perform CRUD operations on their tasks.
-6. Task data is stored in MongoDB Atlas.
-7. Emails are sent using Resend when required.
+## Admin Dashboard
 
-## Technologies Used
+Administrators can:
 
-### Frontend
-- React.js
-- Tailwind CSS
-- Axios
+* View registered users
+* Monitor application users
+* Access administrative functionalities through role-based permissions
 
-### Backend
-- Node.js
-- Express.js
+---
 
-### Database
-- MongoDB Atlas
+# Technology Stack
 
-### Authentication
-- JWT
-- bcrypt
+## Frontend
 
-### Email Service
-- Resend
+* React.js
+* Vite
+* React Router
+* Axios
+* JavaScript
+* CSS3
+* Responsive UI Design
 
-### Deployment
-- Vercel (Frontend)
-- Render (Backend)
+## Backend
 
-## Security Features
+* Node.js
+* Express.js
+* MongoDB
+* Mongoose
+* JWT Authentication
+* bcrypt.js
+* Nodemailer
+* SendGrid SMTP Integration
 
-- Password hashing using bcrypt
-- JWT authentication
-- Protected API routes
-- Environment variables for sensitive credentials
+## Deployment
 
+Frontend:
 
-## What I Learned
+* Vercel
 
-Through this project, I learned:
+Backend:
 
-- Building REST APIs with Express.js
-- Working with MongoDB Atlas
-- Implementing JWT authentication
-- Password security using bcrypt
-- Connecting React with backend APIs
-- Sending emails using Resend
-- Deploying applications using Vercel and Render
+* Render
+
+Database:
+
+* MongoDB Atlas
+
+---
+
+# Application Architecture
+
+```
+User
+ |
+ |
+React Frontend
+ |
+ |
+REST API
+ |
+ |
+Express.js Backend
+ |
+ |
+Authentication Middleware
+ |
+ |
+MongoDB Database
+ |
+ |
+Task Management Services
+```
+
+---
+
+# Authentication Flow
+
+```
+User Registration
+        |
+        |
+Password Hashing
+        |
+        |
+Database Storage
+        |
+        |
+User Login
+        |
+        |
+JWT Token Generation
+        |
+        |
+Protected Application Access
+```
+
+---
+
+# OTP Password Reset Flow
+
+```
+Forgot Password Request
+        |
+        |
+Email Verification
+        |
+        |
+Generate OTP
+        |
+        |
+Send OTP Through Email
+        |
+        |
+Verify OTP
+        |
+        |
+Reset Password
+```
+
+---
+
+# Project Structure
+
+```
+Secure-Task-Manager
+
+├── frontend
+│   ├── src
+│   │   ├── components
+│   │   ├── pages
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   └── package.json
+│
+
+├── backend
+│   ├── models
+│   ├── routes
+│   ├── middleware
+│   ├── controllers
+│   ├── server.js
+│   └── package.json
+│
+
+└── README.md
+```
+
+---
+
+# API Endpoints
+
+## Authentication APIs
+
+| Method | Endpoint                 | Description             |
+| ------ | ------------------------ | ----------------------- |
+| POST   | /api/auth/register       | Register new user       |
+| POST   | /api/auth/login          | Authenticate user       |
+| POST   | /api/auth/send-otp       | Send password reset OTP |
+| POST   | /api/auth/verify-otp     | Verify OTP              |
+| POST   | /api/auth/reset-password | Update password         |
+
+---
+
+## Task APIs
+
+| Method | Endpoint       | Description      |
+| ------ | -------------- | ---------------- |
+| GET    | /api/tasks     | Fetch user tasks |
+| POST   | /api/tasks     | Create new task  |
+| PUT    | /api/tasks/:id | Update task      |
+| DELETE | /api/tasks/:id | Delete task      |
+
+---
+
+# Security Implementation
+
+The application follows important security practices:
+
+* Password encryption using bcrypt
+* JWT-based authentication
+* Protected backend routes
+* User-specific data access control
+* Role-based authorization
+* Secure OTP verification
+* External service integration through backend APIs
+
+---
+
+# Development Highlights
+
+This project demonstrates practical full-stack engineering skills:
+
+* Designing REST APIs
+* Connecting frontend and backend systems
+* Implementing authentication workflows
+* Managing database models and relationships
+* Integrating third-party services
+* Deploying applications on cloud platforms
+* Debugging production deployment issues
+
+---
+
+# Future Enhancements
+
+Planned improvements:
+
+* Real-time task updates using WebSockets
+* AI-based task prioritization
+* Task reminders and notifications
+* Analytics dashboard
+* Google authentication
+* Mobile application
+* Advanced admin management system
+
+---
+
+# About the Developer
+
+## Sakshi Yadav
+
+B.Tech Software Engineering Student
+
+Interested in:
+
+* Full Stack Development
+* Backend Engineering
+* Java Development
+* Cloud Deployment
+* Building scalable software solutions
+
+Technical Skills:
+
+* Java
+* JavaScript
+* React.js
+* Node.js
+* Express.js
+* MongoDB
+* REST APIs
+* Git and GitHub
+
+---
+
+# Project Purpose
+
+Secure Task Manager was built to demonstrate the complete lifecycle of a modern web application, including:
+
+* User authentication
+* Secure backend development
+* Database integration
+* API design
+* Cloud deployment
+* Production-level application practices
+
+This project reflects practical software engineering skills required for real-world development environments.
