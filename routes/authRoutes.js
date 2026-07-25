@@ -1,26 +1,10 @@
 console.log("🔥🔥🔥 AUTH ROUTES LOADED - NEW VERSION 🔥🔥🔥");
 const express = require("express");
 const router = express.Router();
-const nodemailer = require("nodemailer");
-const dns = require("dns");
-dns.setDefaultResultOrder("ipv4first");
+const sgMail = require("@sendgrid/mail");
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.sendgrid.net",
-  port: 587,
-  secure: false,
-  auth: {
-    user: "apikey",
-    pass: process.env.SENDGRID_API_KEY,
-  },
-});
-transporter.verify((error) => {
-  if (error) {
-    console.log("❌ SendGrid Connection Error:", error);
-  } else {
-    console.log("✅ SendGrid SMTP Ready");
-  }
-});
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 
 const User = require("../models/User");
 const OTP = require("../models/OTP");
@@ -132,9 +116,13 @@ await OTP.create({
 
     console.log("Generated OTP:", otp);
 
-const mailResponse = await transporter.sendMail({
-  from: "sakshiyadav2823@gmail.com",
+console.log("📧 Starting email sending...");
+
+console.log("📧 Sending OTP email...");
+
+await sgMail.send({
   to: email,
+  from: "sakshiyadav2823@gmail.com",
   subject: "Password Reset OTP",
   html: `
     <h2>Your OTP is: ${otp}</h2>
@@ -142,9 +130,11 @@ const mailResponse = await transporter.sendMail({
   `,
 });
 
-console.log("MAIL RESPONSE:", mailResponse);
+console.log("✅ Email sent successfully");
+console.log("📧 Email sending completed");
 
-console.log("OTP sent successfully");
+
+
 
     res.json({
       success: true,
@@ -230,9 +220,9 @@ if(!otpRecord){
 
     await OTP.deleteMany({ email });
 
-await transporter.sendMail({
-from: `"Secure Task Manager" <sakshiyadav2823@gmail.com>`,
+await sgMail.send({
   to: email,
+  from: "sakshiyadav2823@gmail.com",
   subject: "Password Changed Successfully",
   html: `
     <p>Your password was changed successfully at:</p>
