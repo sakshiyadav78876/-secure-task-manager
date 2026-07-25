@@ -6,8 +6,7 @@ const dns = require("dns");
 dns.setDefaultResultOrder("ipv4first");
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.sendgrid.net",
-  port: 2525,
+  service: "SendGrid",
   auth: {
     user: "apikey",
     pass: process.env.SENDGRID_API_KEY,
@@ -131,8 +130,8 @@ await OTP.create({
 
     console.log("Generated OTP:", otp);
 
-  await transporter.sendMail({
- from: `"Secure Task Manager" <sakshiyadav2823@gmail.com>`,
+const mailResponse = await transporter.sendMail({
+  from: "sakshiyadav2823@gmail.com",
   to: email,
   subject: "Password Reset OTP",
   html: `
@@ -140,6 +139,8 @@ await OTP.create({
     <p>This OTP is valid for 5 minutes.</p>
   `,
 });
+
+console.log("MAIL RESPONSE:", mailResponse);
 
 console.log("OTP sent successfully");
 

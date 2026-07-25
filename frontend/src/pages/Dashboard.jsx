@@ -153,7 +153,7 @@ const Dashboard = () => {
         {/* HEADER */}
         <header style={styles.topHeader}>
           <div>
-            <h1 style={styles.greeting}>Welcome back, {name.split(' ')[0]} 👋</h1>
+            <h1 style={styles.greeting}>Welcome back, {name.split(' ')[0]} </h1>
             <p style={styles.dateText}>{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</p>
           </div>
           

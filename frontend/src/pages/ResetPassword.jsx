@@ -113,7 +113,7 @@ const ResetPassword = () => {
       <div style={styles.rightSection}>
         <div style={styles.card}>
           <div style={styles.headerArea}>
-            <h2 style={styles.title}>New Password 🔑</h2>
+            <h2 style={styles.title}>New Password </h2>
             <p style={styles.subtitle}>Setting new password for <strong>{email}</strong></p>
           </div>
 

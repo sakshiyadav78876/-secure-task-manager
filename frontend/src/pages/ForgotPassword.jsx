@@ -98,7 +98,7 @@ const ForgotPassword = () => {
           </button>
 
           <div style={styles.headerArea}>
-            <h2 style={styles.title}>Forgot Password? 🔐</h2>
+            <h2 style={styles.title}>Forgot Password? </h2>
             <p style={styles.subtitle}>Enter your email to receive a secure OTP code.</p>
           </div>
 

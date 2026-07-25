@@ -112,7 +112,7 @@ if (response.ok) {
       <div style={styles.rightSection}>
         <div style={styles.card}>
           <div style={styles.headerArea}>
-            <h2 style={styles.title}>Create Account 🚀</h2>
+            <h2 style={styles.title}>Create Account </h2>
             <p style={styles.subtitle}>Start your organized journey today.</p>
           </div>
 
