@@ -132,7 +132,7 @@ await OTP.create({
     console.log("Generated OTP:", otp);
 
   await transporter.sendMail({
-  from: `"Secure Task Manager" <${process.env.EMAIL_USER}>`,
+ from: `"Secure Task Manager" <sakshiyadav2823@gmail.com>`,
   to: email,
   subject: "Password Reset OTP",
   html: `
@@ -228,7 +228,7 @@ if(!otpRecord){
     await OTP.deleteMany({ email });
 
 await transporter.sendMail({
-  from: `"Secure Task Manager" <${process.env.EMAIL_USER}>`,
+from: `"Secure Task Manager" <sakshiyadav2823@gmail.com>`,
   to: email,
   subject: "Password Changed Successfully",
   html: `
